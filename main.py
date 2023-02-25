@@ -17,9 +17,6 @@ import config
 import sys
 import time
 
-from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
-                          QThreadPool, pyqtSignal)
-from PyQt5.QtCore import pyqtSlot
 
 
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -27,16 +24,15 @@ CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 
 def sound():
 
-    filename = os.path.join(CURRENT_DIR, "sound/red_danger_alarm_2_2.mp3")
+    filename = os.path.join(CURRENT_DIR, "sound/tak.mp3")
     app2 = QtCore.QCoreApplication(sys.argv)
     player = QtMultimedia.QMediaPlayer()
     url = QtCore.QUrl.fromLocalFile(filename)
     player.setMedia(QtMultimedia.QMediaContent(url))
     player.play()
-
+    app2.quit()
     sys.exit(app2.exec_())
 
-ui=''
 
 class Ui(QtWidgets.QMainWindow):
 
@@ -64,11 +60,6 @@ class Ui(QtWidgets.QMainWindow):
         pixmap = pixmap.scaled(low_rez)
         IPressure.setPixmap(pixmap)
 
-        # IAcceleration = self.findChild(QLabel, "label_6")
-        # pixmap = QPixmap('img/Acceleration.jpg')
-        # low_rez = QtCore.QSize(25, 25)
-        # pixmap = pixmap.scaled(low_rez)
-        # IAcceleration.setPixmap(pixmap)
 
         IInTemp = self.findChild(QLabel, "label_7")
         pixmap = QPixmap('img/icons8-temperature-inside2.jpg')
@@ -78,6 +69,18 @@ class Ui(QtWidgets.QMainWindow):
 
         IIOutTemp = self.findChild(QLabel, "label_8")
         pixmap = QPixmap('img/temperature-outside4.jpg')
+        low_rez = QtCore.QSize(25, 25)
+        pixmap = pixmap.scaled(low_rez)
+        IIOutTemp.setPixmap(pixmap)
+
+        IIOutTemp = self.findChild(QLabel, "label_139")
+        pixmap = QPixmap('img/temperature-outside4.jpg')
+        low_rez = QtCore.QSize(25, 25)
+        pixmap = pixmap.scaled(low_rez)
+        IIOutTemp.setPixmap(pixmap)
+
+        IIOutTemp = self.findChild(QLabel, "label_143")
+        pixmap = QPixmap('img/gps.jpg')
         low_rez = QtCore.QSize(25, 25)
         pixmap = pixmap.scaled(low_rez)
         IIOutTemp.setPixmap(pixmap)
@@ -92,12 +95,6 @@ class Ui(QtWidgets.QMainWindow):
         pixmap = pixmap.scaled(low_rez)
         IUVIndex.setPixmap(pixmap)
 
-        # ISensor = self.findChild(QLabel, "label_12")
-        # pixmap = QPixmap('img/sensor.jpg')
-        # low_rez = QtCore.QSize(25, 23)
-        # pixmap = pixmap.scaled(low_rez)
-        # ISensor.setPixmap(pixmap)
-
         ISensor_pressure = self.findChild(QLabel, "label_78")
         pixmap = QPixmap('img/pressure.jpg')
         low_rez = QtCore.QSize(25, 25)
@@ -110,7 +107,7 @@ class Ui(QtWidgets.QMainWindow):
         pixmap = pixmap.scaled(low_rez)
         ISensor_acceleration.setPixmap(pixmap)
 
-        ISensor_temp = self.findChild(QLabel, "label_84")
+        ISensor_temp = self.findChild(QLabel, "label_136")
         pixmap = QPixmap('img/icons8-temperature-inside2.jpg')
         low_rez = QtCore.QSize(25, 23)
         pixmap = pixmap.scaled(low_rez)
@@ -123,7 +120,7 @@ class Ui(QtWidgets.QMainWindow):
         ISensor_hiumidity.setPixmap(pixmap)
 
         ISensor_air = self.findChild(QLabel, "label_83")
-        pixmap = QPixmap('img/wind2.jpg')
+        pixmap = QPixmap('img/gsm.jpg')
         low_rez = QtCore.QSize(21, 21)
         pixmap = pixmap.scaled(low_rez)
         ISensor_air.setPixmap(pixmap)
@@ -167,11 +164,11 @@ class Ui(QtWidgets.QMainWindow):
         self.pixmapR = self.pixmapR.scaled(low_rez)
 
         # sound
-        filename = os.path.join(CURRENT_DIR, "sound/red_danger_alarm_2_2.mp3")
-        # app2 = QtCore.QCoreApplication(sys.argv)
-        player = QtMultimedia.QMediaPlayer()
-        url = QtCore.QUrl.fromLocalFile(filename)
-        player.setMedia(QtMultimedia.QMediaContent(url))
+        # filename = os.path.join(CURRENT_DIR, "sound/red_danger_alarm_2_2.mp3")
+        # # app2 = QtCore.QCoreApplication(sys.argv)
+        # player = QtMultimedia.QMediaPlayer()
+        # url = QtCore.QUrl.fromLocalFile(filename)
+        # player.setMedia(QtMultimedia.QMediaContent(url))
         # player.play()
         # time.sleep(2)
         # QtCore.QCoreApplication.quit()
@@ -189,7 +186,7 @@ class Ui(QtWidgets.QMainWindow):
         # Map
         m = folium.Map(
             tiles='OpenStreetMap',
-            zoom_start=21,
+            zoom_start=15,
             location=(config.coordinate_x, config.coordinate_y),
             width=321,
             height=161
@@ -213,20 +210,9 @@ class Ui(QtWidgets.QMainWindow):
         t = Thread(target=show_data, args=(self,), daemon=True)
         t.start()
 
-        # self.launch()
-        # t = Thread(target=self.on_click, daemon=True)
-        # t.start()
+        self.launch()
 
         self.show()
-        
-    # @pyqtSlot()
-    # def on_click(self):
-    #     time.sleep(3)
-    #     print('PyQt5 button click')
-        # image = QFileDialog.getOpenFileName(None, 'OpenFile', '', "Image file(*.jpg)")
-        # imagePath = image[0]
-        # pixmap = QPixmap('img/logo-white.jpg')
-        # self.receivedImage.setPixmap(pixmap)
         
 
     def launch(self):

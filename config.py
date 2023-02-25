@@ -59,18 +59,19 @@ sensor_acceleration = True
 sensor_humidity = True
 sensor_sunlight = True
 sensor_gsm = True
-ground_station_connection = True
-satellite_connection = True
 
 
 
 #####################################
-coordinate_x = 36.308314
-coordinate_y = 59.529174
+coordinate_x = 35.359199
+coordinate_y = 51.9885212
 
 #################################
-data_Of_Camera = True
-sensor_gps=True
+
+ground_station_connection = True
+satellite_connection = True
 sensor_temp_in = True
 sensor_temp_out = True
+data_Of_Camera = True
+sensor_gps=True
 image_text='--'

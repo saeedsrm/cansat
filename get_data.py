@@ -4,8 +4,24 @@ import json
 import time
 import logging
 from threading import Thread
-
+from ftp import send_pic_via_ftp
 logger = ''
+from PyQt5 import QtCore, QtGui, QtWidgets, QtMultimedia
+import os ,sys
+
+CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
+
+
+def sound():
+
+    filename = os.path.join(CURRENT_DIR, "sound/red_danger_alarm_2_2.mp3")
+    app2 = QtCore.QCoreApplication(sys.argv)
+    player = QtMultimedia.QMediaPlayer()
+    url = QtCore.QUrl.fromLocalFile(filename)
+    player.setMedia(QtMultimedia.QMediaContent(url))
+    player.play()
+
+    # sys.exit(app2.exec_())
 
 
 def send_request_to_iot_panel():
@@ -21,8 +37,8 @@ def send_request_to_iot_panel():
         "sunlight_spectrum": config.sunlight_spectrum,
         "sunlight_visible": config.sunlight_visible,
         "humidity": config.hiumidity,
-        "height": config.height_y,
-        "img_path": "http://secure-iot.ir/cansat/1.jpg",
+        "height": config.height_y[-1],
+        "img_path": "http://secure-iot.ir/cansat/final.jpg",
         "image_text": config.image_text
     }
     payload = json.dumps(data)
@@ -37,23 +53,34 @@ def send_request_to_iot_panel():
 
 
 pic_number = 1
-
-
+from imageProcessing.text_recognition import main
+import pytesseract
 def get_picture_from_server():
     logger.info('try to get picture')
     global pic_number
-    url = "http://192.168.137.33:7418"
-    # url = "http://127.0.0.1:7418"
-    try:
-        r = requests.get(
-            url+'/static/final_pic{}.jpg'.format(pic_number), allow_redirects=True)
-        if (r.status_code == 200):
-            open('final.jpg', 'wb').write(r.content)
-            pic_number += 1
-        else:
-            print('there is no picture')
-    except:
-        logger.error('rasbery not respose')
+    # url = "http://192.168.137.33:7418"
+    url = "http://127.0.0.1:7418"
+    # try:
+    r = requests.get(
+        url+'/static/final_pic{}.jpg'.format(pic_number), allow_redirects=True)
+    if (r.status_code == 200):
+        open('final.jpg', 'wb').write(r.content)
+
+        logger.info('send picture to server secure iot')
+        t = Thread(target=send_pic_via_ftp)
+        t.start()
+
+        pytesseract.pytesseract.tesseract_cmd = r'/usr/local/Cellar/tesseract/5.0.1/bin/tesseract'
+        args={'image': 'final.jpg', 'east': 'imageProcessing/frozen_east_text_detection.pb', 'min_confidence': 0.5, 'width': 320, 'height': 320, 'padding': 0.0}
+        config.image_text=main(image=args['image'], width=args['width'], height=args['height'],detector=args['east'], min_confidence=args['min_confidence'],padding=args['padding'])
+        pic_number += 1
+        config.data_Of_Camera=True
+    else:
+        config.data_Of_Camera=False
+        print('there is no picture')
+    # except:
+    #     print('some error line 58')
+    #     logger.error('rasbery not respose')
 
 
 def get_data_from_server():
@@ -64,8 +91,8 @@ def get_data_from_server():
     logger = logging.getLogger()
     logger.setLevel(logging.DEBUG)
 
-    url = "http://192.168.137.33:7418"
-    # url = "http://127.0.0.1:7418"
+    # url = "http://192.168.137.33:7418"
+    url = "http://127.0.0.1:7418"
     al_init = 0
     aa_init = 0
     payload = {}
@@ -86,7 +113,6 @@ def get_data_from_server():
             continue
         payloader1 = data_res['payloader1']
         logger.info('data recived : ' + str(data_res))
-        get_picture_from_server()
         for paload in payloader1:
             d = paload.split('_')
             if len(d) < 2:
@@ -151,8 +177,17 @@ def get_data_from_server():
                 config.acceleration_angular_z = float(
                     acceleration[2])-config.acceleration_angular_z_init
             if d[1] == 'Ti':
+                import os
+
                 if d[0] == '0':
                     config.sensor_temp_in = False
+                    # filename = os.path.join(CURRENT_DIR, "sound/red_danger_alarm_2_2.mp3")
+                    # app2 = QtCore.QCoreApplication(sys.argv)
+                    # player = QtMultimedia.QMediaPlayer()
+                    # url = QtCore.QUrl.fromLocalFile(filename)
+                    # player.setMedia(QtMultimedia.QMediaContent(url))
+                    # player.play()
+                    # sound()
                     continue
                 config.sensor_temp_in = True
                 config.in_temp = float(d[2])
@@ -198,6 +233,11 @@ def get_data_from_server():
                 config.pressure = float(d[2])
 
             config.log = str(response.text)
-        # t = Thread(target=send_request_to_iot_panel)
-        # t.start()
+        t = Thread(target=send_request_to_iot_panel)
+        t.start()
+
+        get_picture_from_server()
+
         # dashboard http://iot.sensifai.com/cansat/fumcan/
+        # t = Thread(target=get_picture_from_server)
+        # t.start()

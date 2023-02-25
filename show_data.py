@@ -69,6 +69,9 @@ def show_data(self):
         self.LPressure_6 = self.findChild(QLabel, "label_77")
         self.LPressure_6.setText(str(config.pressure_6))
 
+        self.LPressure_6 = self.findChild(QLabel, "label_113")
+        self.LPressure_6.setText(str(config.image_text))
+
         self.label_39.setText(str(config.speed))
         self.label_25.setText(str(config.speed_1))
         self.label_27.setText(str(config.speed_2))
@@ -98,25 +101,20 @@ def show_data(self):
         else:
             SPressure.setPixmap(self.pixmapR)
 
-        SPressure = self.findChild(QLabel, "label_111")
+        SPressure = self.findChild(QLabel, "label_112")
         if config.sensor_acceleration:
             SPressure.setPixmap(self.pixmapG)
         else:
             SPressure.setPixmap(self.pixmapR)
 
-        SPressure = self.findChild(QLabel, "label_112")
-        if config.sensor_temp_in:
-            SPressure.setPixmap(self.pixmapG)
-        else:
-            SPressure.setPixmap(self.pixmapR)
 
-        SPressure = self.findChild(QLabel, "label_114")
+        SPressure = self.findChild(QLabel, "label_111")
         if config.sensor_humidity:
             SPressure.setPixmap(self.pixmapG)
         else:
             SPressure.setPixmap(self.pixmapR)
 
-        SPressure = self.findChild(QLabel, "label_113")
+        SPressure = self.findChild(QLabel, "label_114")
         if config.sensor_gsm:
             SPressure.setPixmap(self.pixmapG)
         else:
@@ -127,6 +125,42 @@ def show_data(self):
             SPressure.setPixmap(self.pixmapG)
         else:
             SPressure.setPixmap(self.pixmapR)
+
+        SPressure = self.findChild(QLabel, "label_147")
+        if config.satellite_connection:
+            SPressure.setPixmap(self.pixmapG)
+        else:
+            SPressure.setPixmap(self.pixmapR)
+        
+        SPressure = self.findChild(QLabel, "label_148")
+        if config.ground_station_connection:
+            SPressure.setPixmap(self.pixmapG)
+        else:
+            SPressure.setPixmap(self.pixmapR)
+
+
+        SPressure = self.findChild(QLabel, "label_138")
+        if config.sensor_temp_in:
+            SPressure.setPixmap(self.pixmapG)
+        else:
+            SPressure.setPixmap(self.pixmapR)
+
+        
+
+        SPressure = self.findChild(QLabel, "label_141")
+        if config.sensor_temp_out:
+            SPressure.setPixmap(self.pixmapG)
+        else:
+            SPressure.setPixmap(self.pixmapR)
+
+        
+
+        SPressure = self.findChild(QLabel, "label_145")
+        if config.sensor_gps:
+            SPressure.setPixmap(self.pixmapG)
+        else:
+            SPressure.setPixmap(self.pixmapR)
+
 
         # # Map
         # m = folium.Map(
