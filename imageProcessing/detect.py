@@ -7,12 +7,12 @@ import torch
 import torch.backends.cudnn as cudnn
 from numpy import random
 from types import SimpleNamespace
-from models.experimental import attempt_load
-from utils.datasets import LoadStreams, LoadImages
-from utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
+from imageProcessing.models.experimental import attempt_load
+from imageProcessing.utils.datasets import LoadStreams, LoadImages
+from imageProcessing.utils.general import check_img_size, check_requirements, check_imshow, non_max_suppression, apply_classifier, \
     scale_coords, xyxy2xywh, strip_optimizer, set_logging, increment_path
-from utils.plots import plot_one_box
-from utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
+from imageProcessing.utils.plots import plot_one_box
+from imageProcessing.utils.torch_utils import select_device, load_classifier, time_synchronized, TracedModel
 
 
 # TODO for count all objects
@@ -32,11 +32,11 @@ def count(found_classes, im0):
 def detect(save_img=False):
     return_value = []
     opt = {'weights': f"train\\shape\\weights\\best.pt",
-           'source': 'test.jpg',
+           'source': 'imageProcessing\\test.jpg',
            'img_size': 640,
            'conf_thres': 0.25,
            'iou_thres': 0.45,
-           'device': '0',
+           'device': 'cpu',
            'view_img': True,
            'save_txt': False,
            'save_conf': False,
