@@ -15,7 +15,7 @@ from imutils.object_detection import non_max_suppression
 import numpy as np
 import argparse
 import cv2
-from imageProcessing.Utils import forward_passer, box_extractor
+from Utils import forward_passer, box_extractor
 
 
 def get_arguments():
@@ -89,7 +89,6 @@ def main(image, width, height, detector, min_confidence):
         cv2.rectangle(orig_image, (start_x, start_y), (end_x, end_y), (0, 255, 0), 2)
 
     cv2.imshow("Detection", orig_image)
-    cv2.imwrite('runs/result.jpg',orig_image)
     cv2.waitKey(0)
 
 

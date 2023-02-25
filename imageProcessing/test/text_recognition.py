@@ -18,11 +18,11 @@ import pytesseract
 import numpy as np
 import argparse
 import cv2
-from imageProcessing.Utils import forward_passer, box_extractor
-from imageProcessing.text_detection import resize_image
+from Utils import forward_passer, box_extractor
+from text_detection import resize_image
 from imutils.object_detection import non_max_suppression
-# import subprocess
-from imageProcessing.detect import detect
+import subprocess
+from detect import detect
 
 def get_arguments():
     ap = argparse.ArgumentParser()
@@ -88,7 +88,7 @@ def main(image, width, height, detector, min_confidence, padding):
         # ROI to be recognized
         roi = orig_image[start_y:end_y, start_x:end_x]
         roi_shape = orig_image[start_y - 50:end_y + 100, start_x - 100:end_x]
-        cv2.imwrite('imageProcessing/test.jpg', roi_shape)
+        cv2.imwrite('test.jpg', roi_shape)
         shape = detect()
 
         # recognizing text
@@ -105,13 +105,12 @@ def main(image, width, height, detector, min_confidence, padding):
     results.sort(key=lambda r: r[0][1])
 
     # printing OCR results & drawing them on the image
-    t_tmp=''
     for (start_x, start_y, end_x, end_y), text in results:
         print(shape)
         print('OCR Result')
         print('**********')
         print(f' 🥳🥳🥳 Shape: {shape[4].capitalize()}  Number: {text} ')
-        t_tmp=f' 🥳🥳🥳 Shape: {shape[4].capitalize()}  Number: {text} '
+
 
         # stripping out ASCII characters
         text = ''.join([c if ord(c) < 128 else "" for c in text]).strip()
@@ -121,18 +120,16 @@ def main(image, width, height, detector, min_confidence, padding):
                     cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 0, 255), 3)
 
         cv2.imshow('Detection', output)
-        cv2.imwrite('imageProcessing/runs/output.jpg',output)
         cv2.waitKey(0)
-    return t_tmp
+
 
 
 if __name__ == '__main__':
     # setting up tesseract path
     pytesseract.pytesseract.tesseract_cmd = r'/usr/local/Cellar/tesseract/5.0.1/bin/tesseract'
 
-    # args = get_arguments()
-    # print (args)
-    args={'image': 'input-edit.jpg', 'east': 'frozen_east_text_detection.pb', 'min_confidence': 0.5, 'width': 320, 'height': 320, 'padding': 0.0}
+    args = get_arguments()
+
     main(image=args['image'], width=args['width'], height=args['height'],
          detector=args['east'], min_confidence=args['min_confidence'],
          padding=args['padding'])
